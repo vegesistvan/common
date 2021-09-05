@@ -52,7 +52,7 @@ CString		getTwoWords(CString str);
 CString		sepFirstName(CString str);
 
 
-CString		date2date(CString date);
+//CString		date2date(CString date);
 int			isDate(CStringArray* A, int i, CString* datum);
 BOOL		isDateOK(CString datum);
 BOOL		isNumeric(CString word);
