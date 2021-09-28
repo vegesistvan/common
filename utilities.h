@@ -18,8 +18,10 @@
 #define UTF8BOM 2
 
 
+
+
 int		wordList(CStringArray* arrayP, CString line, char sep, BOOL single);
-void	split(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems);
+void	splitLine(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems);
 int		splitCString(CString cLine, TCHAR sep, bool emptyItem, CStringArray* A);
 void	splitstring(const std::wstring& s, wchar_t delim, bool emptyItem, std::vector<std::wstring>* elems);
 
@@ -48,6 +50,7 @@ CString		getWord(CString str, int n, int* pos);
 CString		getFirstWord(CString str);
 CString		getSecondWord(CString str);
 CString		getLastWord(CString str);
+TCHAR		getLastCharacter(CString word);
 CString		getTwoWords(CString str);
 CString		sepFirstName(CString str);
 
@@ -57,6 +60,8 @@ int			isDate(CStringArray* A, int i, CString* datum);
 BOOL		isDateOK(CString datum);
 BOOL		isNumeric(CString word);
 BOOL		isRoman(CString word);
+BOOL		isRoman(TCHAR kar);
+BOOL		isNumber(CString word);
 //BOOL		isValidBrace(CString brace);
 
 
@@ -69,7 +74,6 @@ void		setCreationTime(CString filespec);
 
 
 //bool operator<(const SAMEMARRIAGE &s1, const SAMEMARRIAGE &s2);
-
 bool		isLastCharacter(CString str, TCHAR kar);
 
 
@@ -111,4 +115,7 @@ CString current_time();
 CString copyN(byte* buff, int db);
 UINT get_uint(byte* buf, bool rotate);
 USHORT get_ushort(byte* buf, bool rotate);
-
+CString getWordFrom(CString line, int pos);
+CString getPresentDateTime();
+int convertRomanToInt(CString roman);
+int digit(TCHAR c);

@@ -37,7 +37,7 @@ void splitstring( const std::wstring& s, wchar_t delim, bool emptyItem, std::vec
 	}
 };
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void split(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems)
+void splitLine(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems)
 {
 	elems->clear();
 	std::wstring s(line, line.GetLength());
@@ -53,6 +53,7 @@ void split(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* el
 	}
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ezzel az a baj, hogy a többszörös separáló karaktereket összevonja, csak 1-nek látja.
 int splitCString( CString cLine, TCHAR sep, bool emptyItem, CStringArray* A )
 {
 	CString word;
@@ -237,6 +238,16 @@ CString getWord(CString str, int n, int* pos)
 	*pos = poziS;
 	return word;
 }
+// pos-adik karaktertõl egy szót visszaad a line-ból
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CString getWordFrom( CString line, int pos)
+{
+	CString word = line;;
+	int pos1;
+	if ((pos1 = line.Find(' ', pos)) != 0)
+		word = line.Mid(pos, pos1 - pos );
+	return word;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CString sepFirstName(CString str)
 {
@@ -303,6 +314,23 @@ BOOL isRoman(CString word)
 		return(!subs2.IsEmpty());
 	}
 	return FALSE;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+BOOL isRoman( TCHAR kar )
+{
+	LPCTSTR valid = L"IVXLCM";
+	CString subs;
+	CString subs2;
+	CString word;
+	word.Format(L"%c", kar);
+
+	subs = word.SpanIncluding(valid);
+	return(subs.GetLength());
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+BOOL isNumber(CString word)
+{
+	return(word.SpanIncluding(L"0123456789 ") == word);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CString cleanCline(CString cLine)
@@ -439,7 +467,12 @@ CString getLastWord(CString cLine)
 		ret = cLine.Mid(pos + 1);
 	return ret;
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+TCHAR getLastCharacter(CString word)
+{
+	if (word.IsEmpty()) return ' ';
+	return word[word.GetLength() - 1];
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void setCreationTime(CString filespec)
 {
@@ -525,109 +558,6 @@ BOOL isDateOK(CString datum)
 	}
 	return FALSE;
 }
-/*
-//////////////////////////////////////////////////////////////////////////////////////////
-BOOL isValidBrace( CString brace )
-{
-	if( brace.Find( '-' )		!= -1 )	return TRUE;
-	if( brace.Find( L"f." )		!= -1 )	return TRUE;
-	if( brace.Find( L"lánya" )	!= -1 )	return TRUE;
-	if( brace.Find( L"leánya" )	!= -1 )	return TRUE;
-	if( brace.Find( L"fia" )	!= -1 )	return TRUE;
-	return FALSE;
-}
-*/
-/*
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CString date2date(CString date)
-{
-	CStringArray monthes;
-
-	monthes.Add(L"Jan");
-	monthes.Add(L"Feb");
-	monthes.Add(L"Mar");
-	monthes.Add(L"Apr");
-	monthes.Add(L"May");
-	monthes.Add(L"Jun");
-	monthes.Add(L"Jul");
-	monthes.Add(L"Aug");
-	monthes.Add(L"Sep");
-	monthes.Add(L"Oct");
-	monthes.Add(L"Nov");
-	monthes.Add(L"Dec");
-
-	CStringArray A;
-	int pos1 = -1;
-	int pos2 = -1;
-	int n;
-	int	i;
-	int year;
-	int month = 0;
-	int day;
-	CString honap;
-	CString modifier(L"");
-	CString str;
-	CString modi[] = { L"kb", L"elõtt", L"után", L"körül" };
-
-
-	if ((pos1 = date.Find(L"BEF")) != -1 || (pos2 = date.Find(L"AFT")) != -1)
-	{
-		if (pos1 != -1) modifier = L" elõtt";
-		else if (pos2 != -1) modifier = L" után";
-		date = date.Mid(4);
-	}
-
-	for (i = 0; i < sizeof(TCHAR) / sizeof(modi); ++i)
-	{
-		if ((pos1 = date.Find(modi[i])) != -1)
-		{
-			modifier = modi[i];
-			date = date.Left(pos1);
-			break;
-		}
-	}
-
-	n = wordList(&A, date, ' ', FALSE);
-
-	if (n != 3)
-	{
-		date.Remove('(');
-		date.Remove(')');
-		date.Trim();
-
-		int len = date.GetLength();
-		if (len == 11)
-		{
-			if (date.GetAt(len - 1) == '.')
-			{
-				str = date.Left(len - 1);
-				date = str;
-			}
-		}
-		return(date);
-	}
-	else
-	{										// 17 DEC 1944
-		day = _wtoi(A.GetAt(0));
-		year = _wtoi(A.GetAt(2));
-
-		for (int i = 0; i < monthes.GetCount(); i++)
-		{
-			honap = A.GetAt(1);
-			honap.Trim();
-			if (!honap.CompareNoCase(monthes[i]))
-			{
-				month = i + 1;
-				break;
-			}
-		}
-		str.Format(L"%4d.%02d.%02d", year, month, day);
-	}
-	str += modifier;
-	str.Trim();
-	return str;
-}
-*/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CString firstUpper(CString name)
 {
@@ -1487,4 +1417,72 @@ USHORT get_ushort(byte* buf, bool rotate)
 	memcpy(&u.h, buf, 2);
 	if (rotate) u.x = rotate16(u.x);
 	return u.x;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CString getPresentDateTime()
+{
+	CTime datetime = CTime::GetCurrentTime();
+	CString str;
+	str = datetime.Format(L"%Y.%m.%d %H:%M:%S");
+	return str;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int convertRomanToInt(CString roman)
+{
+
+	CString str;
+	int i = 0;
+	long int number = 0;
+
+	while (roman.GetAt(i))
+	{
+		if (digit(roman.GetAt(i)) < 0)
+		{
+			str.Format(L"Invalid roman digit: %c", roman.GetAt(i));
+			AfxMessageBox(str);
+			return 0;
+		}
+
+		if ((roman.GetLength() - i) > 2)
+		{
+			if (digit(roman.GetAt(i) < digit(roman.GetAt(i + 2))))
+			{
+				str.Format(L"Invalid roman number: %s", roman);
+
+				return 0;
+			}
+		}
+
+		if (digit(roman.GetAt(i)) >= digit(roman.GetAt(i + 1)))
+		{
+			number = number + digit(roman.GetAt(i));
+		}
+		else
+		{
+			number = number + (digit(roman.GetAt(i + 1)) - digit(roman.GetAt(i)));
+			i++;
+		}
+		i++;
+	}
+
+	return number;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int digit(TCHAR c)
+{
+	int value = 0;
+
+	switch (c)
+	{
+	case 'I': value = 1; break;
+	case 'V': value = 5; break;
+	case 'X': value = 10; break;
+	case 'L': value = 50; break;
+	case 'C': value = 100; break;
+	case 'D': value = 500; break;
+	case 'M': value = 1000; break;
+	case '\0': value = 0; break;
+	default: value = -1;
+	}
+	return value;
 }

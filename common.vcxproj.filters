@@ -72,6 +72,9 @@
     <ClInclude Include="SqliteDBEx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utilities_sqlite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common.cpp">
@@ -117,6 +120,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SqliteDBEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities_sqlite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

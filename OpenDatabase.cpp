@@ -231,6 +231,7 @@ bool COpenDatabase::checkIntegrity()
 {
 	bool hiba = false;
 	CString result;
+	return true;   // munkához kikapcsolom
 
 	if( !query( L"PRAGMA integrity_check" ) ) goto z;
 	result = m_tabla->GetFieldString( 0 );
