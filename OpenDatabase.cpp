@@ -18,7 +18,7 @@ IMPLEMENT_DYNAMIC(COpenDatabase, CWnd)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 COpenDatabase::COpenDatabase()
 {
-	m_databaseSpec.Empty();
+	m_dbPathName.Empty();
 	m_connDB			= NULL;
 	m_numberOfIndexes	= 0;
 	m_numberOfTables	= 0;
@@ -37,7 +37,7 @@ END_MESSAGE_MAP()
 bool COpenDatabase::openDatabase() 
 {
 	bool ret = true;
-	if( m_databaseSpec.IsEmpty() )
+	if( m_dbPathName.IsEmpty() )
 	{
 		AfxMessageBox( L"Az adatbázis fáj specifikációja nincs megadva!" );
 		exit( -1 );
@@ -62,9 +62,9 @@ bool COpenDatabase::openDatabase()
 
 	if( m_connDB->IsConnected()) m_connDB->Close();
 	
-	if( m_connDB->Connect( m_databaseSpec, L"" ) )
+	if( m_connDB->Connect( m_dbPathName, L"" ) )
 	{
-		str.Format( L"%s (key:%s)\nconnect error\n%s", m_databaseSpec, L"", m_connDB->GetLastError() );
+		str.Format( L"%s (key:%s)\nconnect error\n%s", m_dbPathName, L"", m_connDB->GetLastError() );
 		AfxMessageBox(str);
 		exit( -1 );
 	}
@@ -95,7 +95,7 @@ bool COpenDatabase::openDatabase()
 	}
 	else
 	{
-		if( !checkStructure( m_tabla, m_databaseTables, m_numberOfTables, m_databaseSpec ) )
+		if( !checkStructure( m_tabla, m_databaseTables, m_numberOfTables, m_dbPathName ) )
 		{
 			WriteProfileString( L"Settings",L"databasespec", L"" ); 
 			ret = false;

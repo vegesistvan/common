@@ -272,10 +272,9 @@ CString getSecondWord(CString str)
 	str.Trim();
 	if ((pos1 = str.Find(' ')) == -1) return L"";			// csak legfeljebb 1 szó van benne;
 	if ((pos2 = str.Find(' ', pos1 + 1)) == -1)
-	{
 		out = str.Mid(pos1 + 1);			// csak 2 szó van benne
-	}
-	out = str.Mid(pos1 + 1, pos2 - pos1 - 1);
+	else
+		out = str.Mid(pos1 + 1, pos2 - pos1 - 1);
 	return(out);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -840,7 +839,7 @@ CString Utf8ToAnsi(CString cLine)
 //  1 : mindkettõ meg van adva és egyezik;
 //  0 : csak az egyik vagy egy sincs van megadva, így nincs ellentmondás
 //  -1 : mindkettõ meg van adva és nem egyezik
-int same(CString ref, CString par1, CString par2)
+int same( CString par1, CString par2)
 {
 	int len1 = par1.GetLength();
 	int len2 = par2.GetLength();
@@ -1485,4 +1484,50 @@ int digit(TCHAR c)
 	default: value = -1;
 	}
 	return value;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CString upperToLower(CString str)
+{
+	CString word;
+	CString lower;
+	CStringArray A;
+	int j;
+
+	int n = wordList(&A, str, ' ', false);
+	if (n != 2) return str;
+	for (int i = 0; i < A.GetSize(); ++i)
+	{
+		word = A[i];
+		for (int k = 1; k < word.GetLength(); ++k)
+			word.SetAt(k, towlower(word[k]));
+		A[i] = word;
+	}
+	lower = packWords(&A, 0, (int)A.GetSize());
+	return lower;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool isStringUpper( CString str )
+{
+	for (UINT i = 0; i < str.GetLength(); ++i)
+	{
+		if( !iswupper( str.GetAt(i) ) )
+			return false;
+	}
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CString  getNRBD(CString rowid, CString name, CString birth, CString death)
+{
+	CString nameBD;
+	if (!birth.IsEmpty() && death.IsEmpty())
+		nameBD.Format(L"%s (R%s *%s)", name, rowid, birth);
+	else if (birth.IsEmpty() && !death.IsEmpty())
+		nameBD.Format(L"%s (R%s +%s)", name, rowid, death);
+	else if (!birth.IsEmpty() && !death.IsEmpty())
+		nameBD.Format(L"%s (R%s *%s +%s)", name, rowid, birth, death);
+	else
+		nameBD.Format(L"%s (R%s)", name, rowid);
+
+
+	return nameBD;
 }

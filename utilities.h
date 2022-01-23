@@ -18,13 +18,12 @@
 #define UTF8BOM 2
 
 
-
-
 int		wordList(CStringArray* arrayP, CString line, char sep, BOOL single);
 void	splitLine(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems);
 int		splitCString(CString cLine, TCHAR sep, bool emptyItem, CStringArray* A);
 void	splitstring(const std::wstring& s, wchar_t delim, bool emptyItem, std::vector<std::wstring>* elems);
-
+CString  getNRBD(CString rowid, CString name, CString birth, CString death);
+CString upperToLower(CString str);
 
 double Log2(double n);
 TCHAR* thousend(unsigned _int64 val);
@@ -86,7 +85,6 @@ int			GetInputCode(CString fileSpec);
 bool		isUTF8(UCHAR* string, int length);
 CStringA	AnsiToUtf8(CString str);
 CString		Utf8ToAnsi(CString cLine);
-int			same(CString ref, CString par1, CString par2);
 int			getYearFromDate(CString date);
 CString		getTimeTag();
 bool		openFileSpec(FILE** ff, CString fileSpec, CString mode);
@@ -119,3 +117,5 @@ CString getWordFrom(CString line, int pos);
 CString getPresentDateTime();
 int convertRomanToInt(CString roman);
 int digit(TCHAR c);
+bool isStringUpper(CString str);
+int same(CString par1, CString par2);

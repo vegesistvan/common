@@ -56,7 +56,7 @@ public:
 	COpenDatabase();
 	virtual ~COpenDatabase();
 
-	CString			m_databaseSpec;
+	CString			m_dbPathName;
 	CSqliteDB*		m_connDB;
 	const DB*		m_databaseTables;		
 	const INDEXES*	m_databaseIndexes;
