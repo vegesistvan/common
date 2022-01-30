@@ -1510,8 +1510,11 @@ bool isStringUpper( CString str )
 {
 	for (UINT i = 0; i < str.GetLength(); ++i)
 	{
-		if( !iswupper( str.GetAt(i) ) )
-			return false;
+		if (str.GetAt(i) != '_')
+		{
+			if (!iswupper(str.GetAt(i)))
+				return false;
+		}
 	}
 	return true;
 }
