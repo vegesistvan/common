@@ -164,6 +164,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="ListBoxEx.h" />
     <ClInclude Include="ListCtrlEx.h" />
+    <ClInclude Include="ListCtrlEx_messages.h" />
     <ClInclude Include="OpenDatabase.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ProgressWnd.h" />

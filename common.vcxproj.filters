@@ -75,6 +75,9 @@
     <ClInclude Include="utilities_sqlite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ListCtrlEx_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common.cpp">

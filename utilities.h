@@ -56,10 +56,13 @@ CString		sepFirstName(CString str);
 
 //CString		date2date(CString date);
 int			isDate(CStringArray* A, int i, CString* datum);
+int			isWeddingDate(CStringArray* A, int i, CString* datum);
 BOOL		isDateOK(CString datum);
 BOOL		isNumeric(CString word);
 BOOL		isRoman(CString word);
 BOOL		isRoman(TCHAR kar);
+BOOL		isRomanNumber(CString str);
+int			convRomanArabic(CString str);
 BOOL		isNumber(CString word);
 //BOOL		isValidBrace(CString brace);
 
@@ -94,11 +97,14 @@ CString		getNameBD(CString name, CString birth, CString death, CString wedding);
 CString		pack(CString tag, CString place, CString date);
 int			getMonth(CString month);
 
+
+CString thousandSeparator( _int64 val);
 void collectFiles(CString folder, CString ext, std::vector<CString>* vFiles);
 CString lastWord(CString str);
 CString lastButOne(CString str);
 USHORT rotate16(USHORT word);
 UINT rotate32(UINT word);
+UINT64 rotate64(UINT64 word);
 UCHAR ascii_ebcdic(UCHAR ascii);
 UCHAR ebcdic_ascii(UCHAR eb);
 void ebcdic2ascii(UCHAR* out, UCHAR* in, int length, int dis);
@@ -119,3 +125,4 @@ int convertRomanToInt(CString roman);
 int digit(TCHAR c);
 bool isStringUpper(CString str);
 int same(CString par1, CString par2);
+LPCTSTR CStringToLPCTSTR(CString str);

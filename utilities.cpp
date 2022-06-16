@@ -131,6 +131,50 @@ TCHAR* thousend(unsigned _int64 val)
 		else
 			break;
 	}
+	if (*pt == TCHAR(','))
+		*pt = 0;
+
+	return result;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+CString thousandSeparator(_int64 val)
+{
+	CString result;
+	result.Format(L"%I64d", val);
+	int z;
+
+	if (val == -136900)
+		z = 1;
+	std::vector<TCHAR> vString;
+	int count = 0;
+
+	// Traverse the string in reverse
+	for (int i = result.GetLength() - 1; i >= 0; i--)
+	{
+		count++;
+		vString.push_back(result.GetAt(i));
+		if (count == 3)
+		{
+			vString.push_back(',');
+			count = 0;
+		}
+	}
+
+	if (vString.at(vString.size() - 1) == ',')
+		vString.pop_back();
+
+	if (vString.size() > 3 && vString.at(vString.size() - 2) == ',')
+	{
+		vString.pop_back();
+		vString.pop_back();
+		vString.push_back('-');
+	}
+
+	result.Empty();
+	for (int i = vString.size() - 1; i >= 0; --i)
+	{
+		result += vString.at(i);
+	}
 	return result;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,6 +371,36 @@ BOOL isRoman( TCHAR kar )
 	return(subs.GetLength());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+BOOL isRomanNumber(CString str)
+{
+	LPCTSTR valid = L"IVXLCM";
+	CString subs;
+	subs = str.SpanIncluding(valid);
+	return(subs.GetLength());
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int convRomanArabic(CString str)
+{
+	CStringArray A;
+	A.Add(L"I");
+	A.Add(L"II");
+	A.Add(L"III");
+	A.Add(L"IV");
+	A.Add(L"V");
+	A.Add(L"VI");
+	A.Add(L"VII");
+	A.Add(L"VIII");
+	A.Add(L"IX");
+	A.Add(L"X");
+	A.Add(L"XI");
+	A.Add(L"XII");
+	for (int i = 0; i < A.GetCount(); ++i)
+	{
+		if (A[i] == str) return(i + 1);
+	}
+	return 0;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 BOOL isNumber(CString word)
 {
 	return(word.SpanIncluding(L"0123456789 ") == word);
@@ -441,20 +515,14 @@ CString packWords(CStringArray* A, int n, int m)
 	int cnt = 0;
 
 	int db = (int)A->GetSize();
-	if (db == 4)
-		int g = 0;
 
-	for (int j = n; cnt < m; ++j)
+//	for (int j = n; cnt < m; ++j)
+	for (int j = n; j < db && cnt < m; ++j)
 	{
-		if (j >= db || j < 0)
-			int z = 2;
-
 		str += A->GetAt(j);
 		str += L" ";
 		++cnt;
 	}
-	if (db == 4)
-		int g = 0;
 	return str.Trim();
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -499,17 +567,118 @@ int isDate(CStringArray* A, int i, CString* datum)
 {
 	INT_PTR n = A->GetCount();
 	int ret = 0;
+	int pos;
+	CString str1;
+	CString str2;
 	CStringArray M;
+	CStringArray B;
 	CString date(L"");
 	CString miez;
+	CString word;
 	M.Add(L"után");
 	M.Add(L"körül");
 	M.Add(L"elõtt");
 	M.Add(L"kb");
 
+	word = A->GetAt(i);						// 1944/45 alakút is elfogadja dátumnak
+	word.Remove(',');
+
+
+	int num;
+	int m = wordList(&B, word, '.', false);
+	if (m == 3 && isRomanNumber(B[1]))
+	{
+		num = convRomanArabic(B[1]);
+		word.Format(L"%4s.%02d.%02s", B[0], num, B[2]);
+		A->SetAt( i, word );
+	}
+
+	/*
+	if ((pos = word.Find('/')) != -1 )
+	{
+		str1 = word.Left(pos);
+		str2 = word.Mid(pos + 1);
+		if (isNumeric(str1) && isNumeric(str2))
+		{
+			*datum = word;
+			return 1;
+		}
+	}
+	*/
+
+
+
+	miez = word;
+	miez.Remove('?');
+	miez.Remove('.');
+	miez.Remove(',' );
+	miez.Trim();
+	if (isNumeric(miez))
+	{
+		++ret;
+		if (i > 0 && !A->GetAt(i - 1).Compare(L"kb"))		// kb 1944
+		{
+			date = L"kb ";
+			date += A->GetAt(i);
+			++ret;
+		}
+		else
+			date = A->GetAt(i);
+
+		if (i + 1 < n - 1)
+		{
+			for (int j = 0; j < M.GetCount(); ++j)
+			{
+				if (!A->GetAt(i + 1).Compare(M[j]))
+				{
+					date += " ";
+					date += M[j];
+					++ret;
+					break;
+				}
+			}
+		}
+	}
+	*datum = date;
+	return ret;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// a dátum eõtt álló 'kb' ill. a dátum után álló 'után','körül','kb' a dátum része!
+// visszadott ret értéke megadja, hány szóból áll a dátum
+int isWeddingDate(CStringArray* A, int i, CString* datum)
+{
+	INT_PTR n = A->GetCount();
+	int ret = 0;
+	int pos;
+	CString str1;
+	CString str2;
+	CStringArray M;
+	CString date(L"");
+	CString miez;
+	CString word;
+	M.Add(L"után");
+	M.Add(L"körül");
+	M.Add(L"elõtt");
+	M.Add(L"kb");
+
+	word = A->GetAt(i);						// 1944/45 alakút is elfogadja dátumnak
+	word.Remove(',');
+	
+	if ((pos = word.Find('/')) != -1 )
+	{
+		str1 = word.Left(pos);
+		str2 = word.Mid(pos + 1);
+		if (isNumeric(str1) && isNumeric(str2))
+		{
+			*datum = word;
+			return 1;
+		}
+	}
+
 	miez = A->GetAt(i);
-	miez.Replace('?', ' ');
-	miez.Replace('.', ' ');
+	miez.Remove('?');
+	miez.Remove('.');
+	miez.Remove(',');
 	miez.Trim();
 	if (isNumeric(miez))
 	{
@@ -1129,6 +1298,16 @@ UINT rotate32(UINT word)
 	//         4000                0300                            0020                       0001  
 	return(word << 24 | ((word << 16) >> 24) << 16 | ((word >> 16) << 24) >> 16 | word >> 24);
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+UINT64 rotate64(UINT64 word)
+{
+	//			12345678				12345678						12345678						12345678							12345678							12345678						12345678		12345678		
+	//									78000000						67800000						56780000							45678000							34567800						23456780
+	//									00000007						00000006						00000005							00000004							00000003						00000002
+	//			80000000				07000000						00600000						00050000							00004000							00000300						00000020		00000001
+	return(word << 56 | ((word << 48) >> 56) << 48 | ((word << 40) >> 56) << 40 | ((word << 32) >> 56) << 32 | ((word << 24) >> 56) << 24 | ((word << 16) >> 56) << 16 | ((word << 8) >> 56) << 8 | word >> 56);
+
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 UCHAR ascii_ebcdic(UCHAR ascii)
 {
@@ -1377,7 +1556,8 @@ CString current_time()
 	strftime(buf, sizeof(buf), "%X", &tstruct);
 	CString time;
 	time = buf;
-	time.Replace(':', '_');
+	time.Remove(':');
+//	time.Replace(':', '_');
 	return time;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1522,6 +1702,7 @@ bool isStringUpper( CString str )
 CString  getNRBD(CString rowid, CString name, CString birth, CString death)
 {
 	CString nameBD;
+	/*
 	if (!birth.IsEmpty() && death.IsEmpty())
 		nameBD.Format(L"%s (R%s *%s)", name, rowid, birth);
 	else if (birth.IsEmpty() && !death.IsEmpty())
@@ -1530,7 +1711,24 @@ CString  getNRBD(CString rowid, CString name, CString birth, CString death)
 		nameBD.Format(L"%s (R%s *%s +%s)", name, rowid, birth, death);
 	else
 		nameBD.Format(L"%s (R%s)", name, rowid);
-
+*/
+	if (!birth.IsEmpty() && death.IsEmpty())
+		nameBD.Format(L"%s (*%s)", name, birth);
+	else if (birth.IsEmpty() && !death.IsEmpty())
+		nameBD.Format(L"%s (+%s)", name, death);
+	else if (!birth.IsEmpty() && !death.IsEmpty())
+		nameBD.Format(L"%s (*%s +%s)", name, birth, death);
+	else
+		nameBD.Format(L"%s", name);
 
 	return nameBD;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+LPCTSTR CStringToLPCTSTR(CString str)
+{
+	const TCHAR* pC = (LPCTSTR)str;
+	int tLen = str.GetLength() + 1;
+	LPTSTR sT = new TCHAR[tLen];
+	_tcscpy_s(sT, tLen, str.GetBuffer());
+	return sT;
 }
