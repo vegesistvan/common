@@ -109,73 +109,37 @@ double Log2(double n)
 	return log(n) / log(2);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-TCHAR* thousend(unsigned _int64 val)
+CString thousand(_int64 val)
 {
-	static TCHAR result[128];
-	TCHAR* pt;
-	int n;
-	swprintf_s(result, sizeof(result) / sizeof(TCHAR), L"%I64d", val);
-	// Point pt at end of string
-	for (pt = result; *pt; pt++) {}
+	bool negative = (val < 0) ? true : false;
+	CString number;
+	number.Format(L"%I64d", _abs64(val));
 
-	n = 8;		// 3 digit + terminating 0 character
-	while (1)
-	{
-		pt -= 3; // shift 3 digits
-		if (pt > result)
-		{
-			memmove(pt + 1, pt, n);
-			*pt = TCHAR(',');	// thousand separator
-			n += 8;		// 3 digits + separator
-		}
-		else
-			break;
-	}
-	if (*pt == TCHAR(','))
-		*pt = 0;
-
-	return result;
-}
-///////////////////////////////////////////////////////////////////////////////////////////////
-CString thousandSeparator(_int64 val)
-{
-	CString result;
-	result.Format(L"%I64d", val);
-	int z;
-
-	if (val == -136900)
-		z = 1;
-	std::vector<TCHAR> vString;
+	std::vector<TCHAR> vString;  // szám karakterei elõjellel és szeparatorokkal
 	int count = 0;
+	int i;
 
-	// Traverse the string in reverse
-	for (int i = result.GetLength() - 1; i >= 0; i--)
+	// Hátuulról kezdve minden 3. karater szeparáló karakter
+	for (i = number.GetLength() - 1; i > 0; i--)
 	{
 		count++;
-		vString.push_back(result.GetAt(i));
+		vString.push_back(number.GetAt(i));
 		if (count == 3)
 		{
 			vString.push_back(',');
 			count = 0;
 		}
 	}
+	vString.push_back(number.GetAt(i));
+	if (negative) vString.push_back('-');
 
-	if (vString.at(vString.size() - 1) == ',')
-		vString.pop_back();
-
-	if (vString.size() > 3 && vString.at(vString.size() - 2) == ',')
-	{
-		vString.pop_back();
-		vString.pop_back();
-		vString.push_back('-');
-	}
-
-	result.Empty();
+	// a karakerekbõl stringet képez
+	number.Empty();
 	for (int i = vString.size() - 1; i >= 0; --i)
 	{
-		result += vString.at(i);
+		number += vString.at(i);
 	}
-	return result;
+	return number;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void splitFilespec(CString filespec, CString* drive, CString* path, CString* name, CString* ext)

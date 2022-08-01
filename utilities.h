@@ -26,7 +26,6 @@ CString  getNRBD(CString rowid, CString name, CString birth, CString death);
 CString upperToLower(CString str);
 
 double Log2(double n);
-TCHAR* thousend(unsigned _int64 val);
 void splitFilespec(CString filespec, CString* drive, CString* path, CString* name, CString* ext);
 
 
@@ -37,7 +36,7 @@ CStringA UnicodeToMulti(LPCWSTR unicode);
 
 CString		getString(int n);
 double		Log2(double n);
-TCHAR*		thousend(unsigned _int64 val);
+CString		thousand( _int64 val);
 void		splitFilespec(CString filespec, CString* drive, CString* path, CString* name, CString* ext);
 
 CString		dropUntil(CString str, char ch);
@@ -53,8 +52,6 @@ TCHAR		getLastCharacter(CString word);
 CString		getTwoWords(CString str);
 CString		sepFirstName(CString str);
 
-
-//CString		date2date(CString date);
 int			isDate(CStringArray* A, int i, CString* datum);
 int			isWeddingDate(CStringArray* A, int i, CString* datum);
 BOOL		isDateOK(CString datum);
@@ -64,7 +61,6 @@ BOOL		isRoman(TCHAR kar);
 BOOL		isRomanNumber(CString str);
 int			convRomanArabic(CString str);
 BOOL		isNumber(CString word);
-//BOOL		isValidBrace(CString brace);
 
 
 CString		cleanCline(CString cLine);
@@ -98,7 +94,6 @@ CString		pack(CString tag, CString place, CString date);
 int			getMonth(CString month);
 
 
-CString thousandSeparator( _int64 val);
 void collectFiles(CString folder, CString ext, std::vector<CString>* vFiles);
 CString lastWord(CString str);
 CString lastButOne(CString str);
