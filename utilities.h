@@ -28,6 +28,7 @@ CString upperToLower(CString str);
 double Log2(double n);
 void splitFilespec(CString filespec, CString* drive, CString* path, CString* name, CString* ext);
 
+int same(CString par1, CString par2);
 
 CStringW Utf8ToUnicode(LPCSTR utf8);
 CStringA UnicodeToUtf8(LPCWSTR unicode);
@@ -119,5 +120,4 @@ CString getPresentDateTime();
 int convertRomanToInt(CString roman);
 int digit(TCHAR c);
 bool isStringUpper(CString str);
-int same(CString par1, CString par2);
 LPCTSTR CStringToLPCTSTR(CString str);

@@ -492,7 +492,7 @@ CString packWords(CStringArray* A, int n, int m)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 CString getLastWord(CString cLine)
 {
-	CString ret(L"");
+	CString ret = cLine;
 	int pos;
 	if ((pos = cLine.ReverseFind(' ')) != -1)
 		ret = cLine.Mid(pos + 1);
