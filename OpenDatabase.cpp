@@ -66,7 +66,7 @@ bool COpenDatabase::openDatabase()
 	{
 		str.Format( L"%s (key:%s)\nconnect error\n%s", m_dbPathName, L"", m_connDB->GetLastError() );
 		AfxMessageBox(str);
-		exit( -1 );
+		return false;
 	}
 
 	m_tabla		= new CSqliteDBRecordSet;
@@ -75,7 +75,7 @@ bool COpenDatabase::openDatabase()
 
 
 	m_command = L"SELECT * FROM sqlite_master WHERE type == 'table' ORDER BY tbl_name";  // ez azért is kell, mert ha hiba van, akkor ez ad hibajelzést!!
-	if( !query( m_command ) ) exit( -1 );
+	if( !query( m_command ) ) return false;
 
 	if( !m_tabla->RecordsCount() )		// az adatbázis üres
 	{

@@ -22,7 +22,7 @@ int		wordList(CStringArray* arrayP, CString line, char sep, BOOL single);
 void	splitLine(CString line, wchar_t delim, bool emptyItem, std::vector<CString>* elems);
 int		splitCString(CString cLine, TCHAR sep, bool emptyItem, CStringArray* A);
 void	splitstring(const std::wstring& s, wchar_t delim, bool emptyItem, std::vector<std::wstring>* elems);
-CString  getNRBD(CString rowid, CString name, CString birth, CString death);
+CString  getNRBD( CString name, CString birth, CString death);
 CString upperToLower(CString str);
 
 double Log2(double n);
@@ -70,7 +70,7 @@ CString		cleanHtmlTags(int lineNumber, CString cLine);
 CString		packWords(CStringArray* A, int from, int db);
 void		setCreationTime(CString filespec);
 
-
+CString convertNameToUpper(CString name);
 
 //bool operator<(const SAMEMARRIAGE &s1, const SAMEMARRIAGE &s2);
 bool		isLastCharacter(CString str, TCHAR kar);

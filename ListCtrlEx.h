@@ -130,7 +130,7 @@ public:
 	virtual int InsertColumn(int nCol, LPCTSTR lpszColumnHeading, int nFormat = LVCFMT_LEFT, int nWidth = -1, int nSubItem = -1,int nColType=0);//oszlop beszurasa. virtual listctrl eseten nem mukodik
 	
 	CString GetItemText(int nItem, int nSubItem);
-
+	DECLARE_MESSAGE_MAP()
 	// Generated message map functions
 protected:
 	BOOL EditItem(int nItem, int nSubItem);
@@ -152,7 +152,7 @@ protected:
 	afx_msg BOOL OnLvnGetdispinfo(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnHdnItemStateIconClick(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg BOOL OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult);
-	DECLARE_MESSAGE_MAP()
+//	DECLARE_MESSAGE_MAP()
 
 private:
 	static int CompareData (const void *pInfo,const void * a, const void * b);

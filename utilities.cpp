@@ -1663,19 +1663,10 @@ bool isStringUpper( CString str )
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-CString  getNRBD(CString rowid, CString name, CString birth, CString death)
+CString  getNRBD( CString name, CString birth, CString death)
 {
 	CString nameBD;
-	/*
-	if (!birth.IsEmpty() && death.IsEmpty())
-		nameBD.Format(L"%s (R%s *%s)", name, rowid, birth);
-	else if (birth.IsEmpty() && !death.IsEmpty())
-		nameBD.Format(L"%s (R%s +%s)", name, rowid, death);
-	else if (!birth.IsEmpty() && !death.IsEmpty())
-		nameBD.Format(L"%s (R%s *%s +%s)", name, rowid, birth, death);
-	else
-		nameBD.Format(L"%s (R%s)", name, rowid);
-*/
+
 	if (!birth.IsEmpty() && death.IsEmpty())
 		nameBD.Format(L"%s (*%s)", name, birth);
 	else if (birth.IsEmpty() && !death.IsEmpty())
@@ -1695,4 +1686,31 @@ LPCTSTR CStringToLPCTSTR(CString str)
 	LPTSTR sT = new TCHAR[tLen];
 	_tcscpy_s(sT, tLen, str.GetBuffer());
 	return sT;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Kérni kehet csupa nagybetûs családneveket a leszármazotti listán.
+// Ezelket kell konvertáni nagybetûsre.
+// Figyelem! d.Urse, McGregor, Szent-Ivány
+CString convertNameToUpper(CString name)
+{
+	int len = name.GetLength();
+	int	i;
+	CString out;
+	TCHAR kar;
+
+	out = name[0];								// az elsõ karaktert semmiképpen nem konvertáljuk
+	for (i = 1; i < len - 1; ++i)
+	{
+		if (iswlower(name[i + 1]) || !iswalpha(name[i + 1]))
+		{										// akkor konvertáljuk nagybetûre, ha a következõ karakter
+			kar = towupper(name[i]);			// kisbetû vagy nem betû
+			out += kar;
+		}
+		else
+			out += name[i];
+
+	}
+	kar = towupper(name[i]);
+	out += kar;
+	return out;
 }
