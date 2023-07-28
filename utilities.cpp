@@ -839,12 +839,13 @@ CString roundDate( CString date )
 int GetInputCode(CString fileSpec)
 {
 	FILE* fl;
-	int errno_t;
 	CString str;
+	TCHAR error[100];
 
-	if ((errno_t = _wfopen_s(&fl, fileSpec, L"rb")))
+	if ( _wfopen_s(&fl, fileSpec, L"rb"))
 	{
-		str.Format(L"%s megnyitási hiba!", fileSpec);
+		_wcserror_s(error, sizeof(error));
+		str.Format(L"GetInputCiode:\n%s\nmegnyitási hiba!\n%s", fileSpec, error);
 		AfxMessageBox(str);
 		return NULL;
 	}
@@ -1009,16 +1010,13 @@ CString getTimeTag()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool openFileSpec(FILE** ff, CString fileSpec, CString mode)
 {
-	int		errno_t;
 	TCHAR buffer[100];
 	CString str;
 
-	//	const wchar_t *filename,
-
-	if ((errno_t = _wfopen_s(ff, fileSpec, mode)) != 0)  // w+ = reading and writing, existing file destroyed
+	if ( _wfopen_s(ff, fileSpec, mode))  // w+ = reading and writing, existing file destroyed
 	{
 		_wcserror_s(buffer, sizeof(buffer));
-		str.Format(L"%s\nmegnyitási hiba!\n%s", fileSpec, buffer);
+		str.Format(L"openFileSpec:\n%s\nmegnyitási hiba!\n%s", fileSpec, buffer);
 		AfxMessageBox(str);
 		return false;
 	}
